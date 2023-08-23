@@ -28,6 +28,10 @@ Set-Content -Path "$profile" -Value $ChocoProfileValue -Force
 # 2. Install Git using Chocolatey
 choco install git -y
 
+# Refresh environment
+Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+refreshenv
+
 # 3. Clone the GitHub repository
 cd C:\ # Change to the desired directory if you want to clone the repository elsewhere
 git clone https://github.com/BattleBit-Community-Servers/Battlebit-Community-Server-Launcher.git
