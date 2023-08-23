@@ -1,0 +1,45 @@
+<powershell>
+# Ensure the script is being run with proper privileges
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    throw "This script must be run as an administrator!"
+}
+
+# 1. Install Chocolatey
+Set-ExecutionPolicy Bypass -Scope Process -Force;
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+
+iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+
+# Updated profile content to explicitly import Choco
+$ChocoProfileValue = @'
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+  Import-Module "$ChocolateyProfile"
+}
+'@
+
+# Write it to the $profile location
+Set-Content -Path "$profile" -Value $ChocoProfileValue -Force
+
+# Source it
+. $profile
+
+# 2. Install Git using Chocolatey
+choco install git -y
+
+# 3. Clone the GitHub repository
+cd C:\ # Change to the desired directory if you want to clone the repository elsewhere
+git clone https://github.com/BattleBit-Community-Servers/Battlebit-Community-Server-Launcher.git
+
+# 4. Create Environment Variables
+# NOTE: Replace the placeholder values with your own details.
+[System.Environment]::SetEnvironmentVariable("SERVER", "C:\PathToServerInstallation", "Machine")
+[System.Environment]::SetEnvironmentVariable("USERNAME", "YourSteamUsername", "Machine")
+[System.Environment]::SetEnvironmentVariable("PASSWORD", "YourSteamPassword", "Machine")
+[System.Environment]::SetEnvironmentVariable("APPID", "YourServerAppID", "Machine")
+[System.Environment]::SetEnvironmentVariable("BETAPASSWORD", "YourBetaBranchPassword", "Machine")
+
+# Restore the execution policy
+Set-ExecutionPolicy Default
+</powershell>
