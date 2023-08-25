@@ -45,9 +45,19 @@ refreshenv
 # Set alias for python
 mklink "C:\path\to\symlink\python3.exe" "C:\ProgramData\chocolatey\bin\python3.11.exe"
 
-# Clone the GitHub repository
-cd C:\ # Change to the desired directory if you want to clone the repository elsewhere
-git clone https://github.com/BattleBit-Community-Servers/Battlebit-Community-Server-Launcher.git
+# Define the GitHub API endpoint for the latest release
+$apiUrl = "https://api.github.com/repos/BattleBit-Community-Servers/Battlebit-Community-Server-Launcher/releases/latest"
+
+# Fetch details of the latest release using Invoke-RestMethod
+$releaseInfo = Invoke-RestMethod -Uri $apiUrl
+
+# Get the download URL for the first asset
+$downloadUrl = $releaseInfo.assets[0].browser_download_url
+
+# Use Invoke-WebRequest to download the asset
+Invoke-WebRequest -Uri $downloadUrl -OutFile ".\$($releaseInfo.assets[0].name)"
+
+Write-Output "Downloaded $($releaseInfo.assets[0].name)!"
 
 # Create Environment Variables
 # NOTE: Replace the placeholder values with your own details.
