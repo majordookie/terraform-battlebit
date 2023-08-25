@@ -55,17 +55,19 @@ $releaseInfo = Invoke-RestMethod -Uri $apiUrl
 $downloadUrl = $releaseInfo.assets[0].browser_download_url
 
 # Use Invoke-WebRequest to download the asset
-Invoke-WebRequest -Uri $downloadUrl -OutFile ".\$($releaseInfo.assets[0].name)"
+Invoke-WebRequest -Uri $downloadUrl -OutFile "C:\$($releaseInfo.assets[0].name)"
 
 Write-Output "Downloaded $($releaseInfo.assets[0].name)!"
 
+Expand-Archive C:\$($releaseInfo.assets[0].name) -DestinationPath C:\Battlebit-Community-Server-Launcher
+
 # Create Environment Variables
 # NOTE: Replace the placeholder values with your own details.
-[System.Environment]::SetEnvironmentVariable("SERVER", "C:\Battlebit-Community-Server-Launcher", "Machine")
-[System.Environment]::SetEnvironmentVariable("USERNAME", "YourSteamUsername", "Machine")
-[System.Environment]::SetEnvironmentVariable("PASSWORD", "YourSteamPassword", "Machine")
-[System.Environment]::SetEnvironmentVariable("APPID", "671860", "Machine")
-[System.Environment]::SetEnvironmentVariable("BETAPASSWORD", "YourBetaBranchPassword", "Machine")
+[System.Environment]::SetEnvironmentVariable("SERVER", "C:\Battlebit-Community-Server-Launcher")
+[System.Environment]::SetEnvironmentVariable("USERNAMER", "YourSteamUsername")
+[System.Environment]::SetEnvironmentVariable("PASSWORD", "YourSteamPassword")
+[System.Environment]::SetEnvironmentVariable("APPID", "671860")
+[System.Environment]::SetEnvironmentVariable("BETAPASSWORD", "YourBetaBranchPassword")
 
 # Restore the execution policy
 Set-ExecutionPolicy Default
